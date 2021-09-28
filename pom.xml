@@ -59,6 +59,7 @@
   </dependencies>
 
   <build>
+    <finalName>poc-module</finalName>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
@@ -67,4 +68,13 @@
     </plugins>
   </build>
 
+  <repositories>
+    <repository>
+      <id>github</id>
+      <url>https://maven.pkg.github.com/Koppeltaal/*</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 </project>
