@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <title>SHOF Launch successful</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1>ingelogd: ${tokenResponse}</h1>
+<main>
+  <h1>Welcome</h1>
+  <pre th:text="${tokenResponse}"></pre>
+</main>
 </body>
 </html>
