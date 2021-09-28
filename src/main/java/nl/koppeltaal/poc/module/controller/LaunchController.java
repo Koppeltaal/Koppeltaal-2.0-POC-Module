@@ -53,8 +53,8 @@ public class LaunchController {
             + "scope=%s&"
             + "state=%s&"
             + "redirect_url=%s"
-        , authorizeUrl, iss, launch, smartServiceConfiguration.getClientId(),
-        smartServiceConfiguration.getScope(), state, codeUrl);
+        , authorizeUrl, URLEncoder.encode(iss, StandardCharsets.UTF_8), launch, smartServiceConfiguration.getClientId(),
+        smartServiceConfiguration.getScope().replaceAll(" ", "+"), state, codeUrl);
 
     stateToRedirectUrlMap.put(state, redirectUrl);
 
