@@ -1,4 +1,4 @@
-FROM maven:3.6.3-jdk-11 AS build
+FROM maven:3.8.2-openjdk-11 AS build
 
 ADD pom.xml /pom.xml
 ADD src /src
@@ -20,7 +20,5 @@ COPY --from=build target/poc-module.jar /poc-module.jar
 ENV TZ="Europe/Amsterdam"
 
 EXPOSE 8080
-
-ENV FHIR_PROFILE "R4"
 
 ENTRYPOINT [ "sh", "-c", "java -jar /poc-module.jar" ]
