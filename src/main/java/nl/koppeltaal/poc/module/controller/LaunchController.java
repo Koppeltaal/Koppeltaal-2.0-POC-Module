@@ -19,9 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class LaunchController {
@@ -38,27 +42,21 @@ public class LaunchController {
   }
 
   @GetMapping("module_launch")
-  public String launchSHOF(@RequestParam String iss, @RequestParam String launch, HttpServletRequest request) {
+  public View launchSHOF(@RequestParam String iss, @RequestParam String launch, HttpServletRequest request, RedirectAttributes redirectAttributes) {
     final String authorizeUrl = capabilitiesService.getAuthorizeUrl();
     final String state = UUID.randomUUID().toString();
-    final String codeUrl = URLEncoder.encode(request.getRequestURL().toString().replace("module_launch", "consume_code"),
-        StandardCharsets.UTF_8);
+    final String codeUrl = request.getRequestURL().toString().replace("module_launch", "consume_code");
 
-    final String redirectUrl = String.format(
-        "%s?"
-            + "aud=%s&"
-            + "launch=%s&"
-            + "response_type=code&"
-            + "client_id=%s&"
-            + "scope=%s&"
-            + "state=%s&"
-            + "redirect_url=%s"
-        , authorizeUrl, URLEncoder.encode(iss, StandardCharsets.UTF_8), launch, smartServiceConfiguration.getClientId(),
-        smartServiceConfiguration.getScope().replaceAll(" ", "+"), state, codeUrl);
+    stateToRedirectUrlMap.put(state, codeUrl);
 
-    stateToRedirectUrlMap.put(state, redirectUrl);
+    redirectAttributes.addAttribute("aud", iss);
+    redirectAttributes.addAttribute("launch", launch);
+    redirectAttributes.addAttribute("client_id", smartServiceConfiguration.getClientId());
+    redirectAttributes.addAttribute("scope", smartServiceConfiguration.getScope());
+    redirectAttributes.addAttribute("state", state);
+    redirectAttributes.addAttribute("redirect_uri", codeUrl);
 
-    return "redirect:" + redirectUrl;
+    return new RedirectView(authorizeUrl);
   }
 
   @GetMapping("consume_code")
@@ -69,12 +67,12 @@ public class LaunchController {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    final Map<String, String> attributes = new HashMap<>();
-    attributes.put("grant_type", "authorization_code");
-    attributes.put("code", code);
-    attributes.put("redirect_uri", stateToRedirectUrlMap.get(state));
+    final LinkedMultiValueMap<String, String> attributes = new LinkedMultiValueMap<>();
+    attributes.add("grant_type", "authorization_code");
+    attributes.add("code", code);
+    attributes.add("redirect_uri", stateToRedirectUrlMap.get(state));
 
-    HttpEntity<Map<String, String>> entity = new HttpEntity<>(attributes, headers);
+    HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(attributes, headers);
 
     final ResponseEntity<TokenResponse> tokenResponseEntity = restTemplate.exchange(
         tokenUrl,
