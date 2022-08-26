@@ -1,31 +1,28 @@
 package nl.koppeltaal.poc.module.controller;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
 import nl.koppeltaal.poc.module.model.KoppeltaalAuthentication;
 import nl.koppeltaal.poc.module.model.TokenResponse;
 import nl.koppeltaal.spring.boot.starter.smartservice.configuration.SmartServiceConfiguration;
 import nl.koppeltaal.spring.boot.starter.smartservice.service.fhir.FhirCapabilitiesService;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class LaunchController {
@@ -41,7 +38,7 @@ public class LaunchController {
     this.smartServiceConfiguration = smartServiceConfiguration;
   }
 
-  @GetMapping("module_launch")
+  @RequestMapping(value = "module_launch", method = {RequestMethod.GET, RequestMethod.POST})
   public View launchSHOF(@RequestParam String iss, @RequestParam String launch, HttpServletRequest request, RedirectAttributes redirectAttributes) {
     final String authorizeUrl = capabilitiesService.getAuthorizeUrl();
     final String state = UUID.randomUUID().toString();
