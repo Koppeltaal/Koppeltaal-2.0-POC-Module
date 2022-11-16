@@ -2,6 +2,7 @@ package nl.koppeltaal.poc.module.controller;
 
 import nl.koppeltaal.poc.module.model.KoppeltaalAuthentication;
 import nl.koppeltaal.poc.module.model.TokenResponse;
+import nl.koppeltaal.poc.module.util.PkceUtil;
 import nl.koppeltaal.spring.boot.starter.smartservice.configuration.SmartServiceConfiguration;
 import nl.koppeltaal.spring.boot.starter.smartservice.service.fhir.FhirCapabilitiesService;
 import nl.koppeltaal.spring.boot.starter.smartservice.service.fhir.SmartClientCredentialService;
@@ -28,6 +29,7 @@ public class LaunchController {
 
   private final SmartClientCredentialService smartClientCredentialService;
   private final Map<String, String> stateToRedirectUrlMap = new HashMap<>();
+  private final Map<String, String> stateToVerifierMap = new HashMap<>();
   private final RestTemplate restTemplate = new RestTemplate();
 
   public LaunchController(FhirCapabilitiesService capabilitiesService,
@@ -43,8 +45,9 @@ public class LaunchController {
     final String authorizeUrl = capabilitiesService.getAuthorizeUrl();
     final String state = UUID.randomUUID().toString();
     final String codeUrl = request.getRequestURL().toString().replace("module_launch", "consume_code");
-
+    final String codeVerifier  = PkceUtil.generateCodeVerifier();
     stateToRedirectUrlMap.put(state, codeUrl);
+    stateToRedirectUrlMap.put(state, codeVerifier);
 
     redirectAttributes.addAttribute("aud", iss);
     redirectAttributes.addAttribute("launch", launch);
@@ -52,6 +55,8 @@ public class LaunchController {
     redirectAttributes.addAttribute("scope", smartServiceConfiguration.getScope());
     redirectAttributes.addAttribute("state", state);
     redirectAttributes.addAttribute("redirect_uri", codeUrl);
+    redirectAttributes.addAttribute("code_challenge", PkceUtil.generateCodeChallenge(codeVerifier));
+    redirectAttributes.addAttribute("code_challenge_method", "S256");
 
     return new RedirectView(authorizeUrl);
   }
@@ -72,6 +77,8 @@ public class LaunchController {
 
     attributes.add("client_assertion_type", SmartClientCredentialService.CLIENT_ASSERTION_TYPE);
     attributes.add("client_assertion", smartClientCredentialService.getSmartServiceClientAssertion(tokenUrl));
+
+    attributes.add("code_verifier", stateToVerifierMap.get(state));
 
     HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(attributes, headers);
 
