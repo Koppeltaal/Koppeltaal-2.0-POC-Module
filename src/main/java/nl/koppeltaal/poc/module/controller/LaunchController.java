@@ -47,7 +47,7 @@ public class LaunchController {
     final String codeUrl = request.getRequestURL().toString().replace("module_launch", "consume_code");
     final String codeVerifier  = PkceUtil.generateCodeVerifier();
     stateToRedirectUrlMap.put(state, codeUrl);
-    stateToRedirectUrlMap.put(state, codeVerifier);
+    stateToVerifierMap.put(state, codeVerifier);
 
     redirectAttributes.addAttribute("aud", iss);
     redirectAttributes.addAttribute("launch", launch);
