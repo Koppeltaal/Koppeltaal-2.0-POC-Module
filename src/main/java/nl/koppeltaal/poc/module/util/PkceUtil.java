@@ -23,7 +23,8 @@ public class PkceUtil {
 			byte[] bytes = codeVerifier.getBytes("US-ASCII");
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			digest.update(bytes, 0, bytes.length);
-			return Base64.getUrlEncoder().withoutPadding().encodeToString(digest.digest());
+			//TODO: Check if the padding should be removed or not
+			return Base64.getUrlEncoder().encodeToString(digest.digest());
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
