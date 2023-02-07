@@ -14,10 +14,9 @@ public class TokenResponse {
   private Integer expiresIn;
 
   private String scope;
-
+  private String sub;
   @JsonProperty("id_token")
   private String idToken;
-
   @JsonProperty("refresh_token")
   private String refreshToken;
 
@@ -29,28 +28,12 @@ public class TokenResponse {
     this.accessToken = accessToken;
   }
 
-  public String getTokenType() {
-    return tokenType;
-  }
-
-  public void setTokenType(String tokenType) {
-    this.tokenType = tokenType;
-  }
-
   public Integer getExpiresIn() {
     return expiresIn;
   }
 
   public void setExpiresIn(Integer expiresIn) {
     this.expiresIn = expiresIn;
-  }
-
-  public String getScope() {
-    return scope;
-  }
-
-  public void setScope(String scope) {
-    this.scope = scope;
   }
 
   public String getIdToken() {
@@ -67,6 +50,30 @@ public class TokenResponse {
 
   public void setRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
+  }
+
+  public String getScope() {
+    return scope;
+  }
+
+  public void setScope(String scope) {
+    this.scope = scope;
+  }
+
+  public String getTokenType() {
+    return tokenType;
+  }
+
+  public void setTokenType(String tokenType) {
+    this.tokenType = tokenType;
+  }
+
+  public String getSub() {
+    return sub;
+  }
+
+  public void setSub(String sub) {
+    this.sub = sub;
   }
 
   @Override
