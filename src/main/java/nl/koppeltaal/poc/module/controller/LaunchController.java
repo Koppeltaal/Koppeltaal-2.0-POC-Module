@@ -1,5 +1,7 @@
 package nl.koppeltaal.poc.module.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.koppeltaal.poc.module.model.KoppeltaalAuthentication;
 import nl.koppeltaal.poc.module.model.TokenResponse;
 import nl.koppeltaal.poc.module.util.PkceUtil;
@@ -31,6 +33,7 @@ public class LaunchController {
   private final Map<String, String> stateToRedirectUrlMap = new HashMap<>();
   private final Map<String, String> stateToVerifierMap = new HashMap<>();
   private final RestTemplate restTemplate = new RestTemplate();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public LaunchController(FhirCapabilitiesService capabilitiesService,
                           SmartServiceConfiguration smartServiceConfiguration,
@@ -62,7 +65,7 @@ public class LaunchController {
   }
 
   @GetMapping("consume_code")
-  public String consumeCode(@RequestParam String code, @RequestParam String state, ModelMap modelMap, HttpServletRequest request) {
+  public String consumeCode(@RequestParam String code, @RequestParam String state, ModelMap modelMap) {
 
     final String tokenUrl = capabilitiesService.getTokenUrl();
 
@@ -95,7 +98,13 @@ public class LaunchController {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    modelMap.addAttribute("tokenResponse", tokenResponse);
+    String tokenPrettyJson;
+    try {
+      tokenPrettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(tokenResponse);
+    } catch (JsonProcessingException e) {
+      tokenPrettyJson = tokenResponse.toString();
+    }
+    modelMap.addAttribute("tokenResponse", tokenPrettyJson);
 
     stateToRedirectUrlMap.remove(state);
 

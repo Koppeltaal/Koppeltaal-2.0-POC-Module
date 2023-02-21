@@ -15,6 +15,9 @@ public class TokenResponse {
 
   private String scope;
   private String sub;
+  private String patient;
+  private String resource;
+  private String intent;
   @JsonProperty("id_token")
   private String idToken;
   @JsonProperty("refresh_token")
@@ -76,15 +79,43 @@ public class TokenResponse {
     this.sub = sub;
   }
 
+  public String getPatient() {
+    return patient;
+  }
+
+  public void setPatient(String patient) {
+    this.patient = patient;
+  }
+
+  public String getResource() {
+    return resource;
+  }
+
+  public void setResource(String resource) {
+    this.resource = resource;
+  }
+
+  public String getIntent() {
+    return intent;
+  }
+
+  public void setIntent(String intent) {
+    this.intent = intent;
+  }
+
   @Override
   public String toString() {
     return "TokenResponse{" +
-        "accessToken='" + accessToken + '\'' +
-        ", tokenType='" + tokenType + '\'' +
-        ", expiresIn=" + expiresIn +
-        ", scope='" + scope + '\'' +
-        ", idToken='" + idToken + '\'' +
-        ", refreshToken='" + refreshToken + '\'' +
-        '}';
+            "accessToken='" + accessToken + '\'' +
+            ", tokenType='" + tokenType + '\'' +
+            ", expiresIn=" + expiresIn +
+            ", scope='" + scope + '\'' +
+            ", sub='" + sub + '\'' +
+            ", patient='" + patient + '\'' +
+            ", resource='" + resource + '\'' +
+            ", intent='" + intent + '\'' +
+            ", idToken='" + idToken + '\'' +
+            ", refreshToken='" + refreshToken + '\'' +
+            '}';
   }
 }
