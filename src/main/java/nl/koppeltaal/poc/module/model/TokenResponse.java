@@ -13,6 +13,7 @@ public class TokenResponse {
   @JsonProperty("expires_in")
   private Integer expiresIn;
 
+  private String definition;
   private String scope;
   private String sub;
   private String patient;
@@ -53,6 +54,14 @@ public class TokenResponse {
 
   public void setRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
+  }
+
+  public String getDefinition() {
+    return definition;
+  }
+
+  public void setDefinition(String definition) {
+    this.definition = definition;
   }
 
   public String getScope() {
@@ -109,6 +118,7 @@ public class TokenResponse {
             "accessToken='" + accessToken + '\'' +
             ", tokenType='" + tokenType + '\'' +
             ", expiresIn=" + expiresIn +
+            ", definition='" + definition + '\'' +
             ", scope='" + scope + '\'' +
             ", sub='" + sub + '\'' +
             ", patient='" + patient + '\'' +
