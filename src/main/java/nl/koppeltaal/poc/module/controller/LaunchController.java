@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.View;
@@ -43,7 +44,7 @@ public class LaunchController {
     this.smartClientCredentialService = smartClientCredentialService;
   }
 
-  @GetMapping("module_launch")
+  @PostMapping("module_launch")
   public View launchSHOF(@RequestParam String iss, @RequestParam String launch, HttpServletRequest request, RedirectAttributes redirectAttributes) {
     final String authorizeUrl = capabilitiesService.getAuthorizeUrl();
     final String state = UUID.randomUUID().toString();
